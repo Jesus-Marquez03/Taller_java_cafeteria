@@ -11,6 +11,7 @@ import com.ejercicios.modelo.Pedido;
 import com.ejercicios.modelo.Producto;
 import com.ejercicios.notificacion.Notificador;
 import com.ejercicios.notificacion.NotificadorCorreo;
+import com.ejercicios.notificacion.NotificadorSms;
 import com.ejercicios.pago.MetodoPago;
 import com.ejercicios.pago.PagoEfectivo;
 import com.ejercicios.pago.PagoTarjeta;
@@ -121,8 +122,7 @@ public class AplicacionConsola {
             return;
         }
 
-        boolean simularFallo = leerSiNo("¿Simular fallo del correo? (s/n): ");
-        Notificador notificador = new NotificadorCorreo(simularFallo);
+        Notificador notificador = seleccionarNotificador();
         ServicioConfirmacionPedido servicio = new ServicioConfirmacionPedido(notificador);
         ResultadoConfirmacion resultado = servicio.intentarConfirmar(
                 pedidoEncontrado.get(), metodoPago);
@@ -134,6 +134,26 @@ public class AplicacionConsola {
                     resultado.getResultadoPago().getCambio()));
         }
         System.out.println(resultado.getMensajeNotificacion());
+    }
+
+    private Notificador seleccionarNotificador() {
+        while (true) {
+            System.out.println("Canal de notificación:");
+            System.out.println("1. Correo electrónico");
+            System.out.println("2. SMS");
+            int opcion = leerEntero("Seleccione: ");
+            boolean simularFallo;
+            switch (opcion) {
+                case 1:
+                    simularFallo = leerSiNo("¿Simular fallo del correo? (s/n): ");
+                    return new NotificadorCorreo(simularFallo);
+                case 2:
+                    simularFallo = leerSiNo("¿Simular fallo del SMS? (s/n): ");
+                    return new NotificadorSms(simularFallo);
+                default:
+                    System.out.println("Canal de notificación inválido.");
+            }
+        }
     }
 
     private MetodoPago seleccionarMetodoPago() {
