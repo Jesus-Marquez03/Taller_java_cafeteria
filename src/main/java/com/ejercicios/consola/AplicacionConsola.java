@@ -1,6 +1,7 @@
 package com.ejercicios.consola;
 
 import com.ejercicios.descuento.DescuentoClienteFrecuente;
+import com.ejercicios.descuento.DescuentoFijo;
 import com.ejercicios.descuento.DescuentoPorVolumen;
 import com.ejercicios.descuento.PoliticaDescuento;
 import com.ejercicios.descuento.SinDescuento;
@@ -90,6 +91,7 @@ public class AplicacionConsola {
             System.out.println("1. Sin descuento");
             System.out.println("2. Cliente frecuente (10 %)");
             System.out.println("3. Volumen (15 % desde 10 unidades)");
+            System.out.println("4. Descuento fijo de $5.000 desde $40.000");
             int opcion = leerEntero("Seleccione: ");
             switch (opcion) {
                 case 1:
@@ -98,6 +100,8 @@ public class AplicacionConsola {
                     return new DescuentoClienteFrecuente();
                 case 3:
                     return new DescuentoPorVolumen();
+                case 4:
+                    return new DescuentoFijo();
                 default:
                     System.out.println("Política inválida.");
             }
