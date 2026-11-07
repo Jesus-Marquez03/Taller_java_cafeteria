@@ -1,0 +1,14 @@
+target/
+.maven-repository/
+*.class
+debug.log
+*.log
+*.tmp
+*.swp
+
+.idea/
+.vscode/
+*.iml
+
+.DS_Store
+Thumbs.db
