@@ -13,6 +13,7 @@ import com.ejercicios.notificacion.NotificadorCorreo;
 import com.ejercicios.pago.MetodoPago;
 import com.ejercicios.pago.PagoEfectivo;
 import com.ejercicios.pago.PagoTarjeta;
+import com.ejercicios.pago.PagoTransferencia;
 import com.ejercicios.servicio.GestorPedidos;
 import com.ejercicios.servicio.ResultadoConfirmacion;
 import com.ejercicios.servicio.ServicioConfirmacionPedido;
@@ -135,10 +136,13 @@ public class AplicacionConsola {
         System.out.println("Método de pago:");
         System.out.println("1. Efectivo");
         System.out.println("2. Tarjeta simulada");
+        System.out.println("3. Transferencia simulada");
         int opcion = leerEntero("Seleccione: ");
         return switch (opcion) {
             case 1 -> new PagoEfectivo(leerLong("Dinero recibido: "));
             case 2 -> new PagoTarjeta(leerSiNo("¿Simular aprobación? (s/n): "));
+            case 3 -> new PagoTransferencia(
+                    leerSiNo("¿Simular aprobación? (s/n): "));
             default -> {
                 System.out.println("Método de pago inválido.");
                 yield null;
