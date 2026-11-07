@@ -6,6 +6,7 @@ import com.ejercicios.descuento.DescuentoPorVolumen;
 import com.ejercicios.descuento.PoliticaDescuento;
 import com.ejercicios.descuento.SinDescuento;
 import com.ejercicios.modelo.Cliente;
+import com.ejercicios.modelo.EstadoPedido;
 import com.ejercicios.modelo.LineaPedido;
 import com.ejercicios.modelo.Pedido;
 import com.ejercicios.modelo.Producto;
@@ -117,23 +118,32 @@ public class AplicacionConsola {
             return;
         }
 
-        MetodoPago metodoPago = seleccionarMetodoPago();
-        if (metodoPago == null) {
+        Pedido pedido = pedidoEncontrado.get();
+        if (pedido.getEstado() == EstadoPedido.CONFIRMADO) {
+            System.out.println("El pedido ya está confirmado; no se realizará otro cobro.");
             return;
         }
 
-        Notificador notificador = seleccionarNotificador();
-        ServicioConfirmacionPedido servicio = new ServicioConfirmacionPedido(notificador);
-        ResultadoConfirmacion resultado = servicio.intentarConfirmar(
-                pedidoEncontrado.get(), metodoPago);
+        try {
+            MetodoPago metodoPago = seleccionarMetodoPago();
+            if (metodoPago == null) {
+                return;
+            }
 
-        System.out.println(resultado.getResultadoPago().getMensaje());
-        if (resultado.getResultadoPago().isAprobado()
-                && resultado.getResultadoPago().getCambio() > 0) {
-            System.out.println("Cambio: " + formatearDinero(
-                    resultado.getResultadoPago().getCambio()));
+            Notificador notificador = seleccionarNotificador();
+            ServicioConfirmacionPedido servicio = new ServicioConfirmacionPedido(notificador);
+            ResultadoConfirmacion resultado = servicio.intentarConfirmar(pedido, metodoPago);
+
+            System.out.println(resultado.getResultadoPago().getMensaje());
+            if (resultado.getResultadoPago().isAprobado()
+                    && resultado.getResultadoPago().getCambio() > 0) {
+                System.out.println("Cambio: " + formatearDinero(
+                        resultado.getResultadoPago().getCambio()));
+            }
+            System.out.println(resultado.getMensajeNotificacion());
+        } catch (IllegalArgumentException excepcion) {
+            System.out.println("No se pudo procesar el pago: " + excepcion.getMessage());
         }
-        System.out.println(resultado.getMensajeNotificacion());
     }
 
     private Notificador seleccionarNotificador() {
